@@ -1,79 +1,52 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define fast_io                       \
-    ios_base::sync_with_stdio(false); \
-    cin.tie(NULL);
-#define ll long long
-#define vi vector<int>
-#define vll vector<long long>
-#define pii pair<int, int>
-#define pb push_back
-#define all(v) v.begin(), v.end()
-#define sz(x) (int)(x.size())
-#define FOR(i, a, b) for (int i = (a); i < (b); ++i)
-
-const int MOD = 1e9 + 7;
-const int INF = 1e9;
-
-vector<int> getStartAndEndDateAsDays(string period)
+int dateToDayOfYear(const string &date)
 {
-    vector<int> periodInDays(2, 0);
-    int startDays;
-    string daysStart = period.substr(0, 2);
-    string monthStart = period.substr(3, 2);
-    startDays = stoi(daysStart) + ((stoi(monthStart) - 1) * 31);
-    periodInDays[0] = startDays;
-    int endDays;
-    string daysEnd = period.substr(6, 2);
-    string monthEnd = period.substr(9, 2);
-    endDays = stoi(daysEnd) + ((stoi(monthEnd) - 1) * 31);
-    if (endDays < startDays)
-    {
-        endDays += startDays;
-    }
-    periodInDays[1] = endDays;
-    return periodInDays;
+    static int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int day = stoi(date.substr(0, 2));
+    int month = stoi(date.substr(3, 2));
+    int total = day;
+    for (int i = 1; i < month; ++i)
+        total += daysInMonth[i];
+    return total;
+}
+
+pair<int, int> parsePeriod(string line)
+{
+    return {
+        dateToDayOfYear(line.substr(0, 5)),
+        dateToDayOfYear(line.substr(6, 5))};
 }
 
 void solve(int collegues)
 {
-    vector<string> feriasVec;
-    string ferias;
+    vector<pair<int, int>> feriasColegas;
+    string line;
+    getline(cin, line);
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    if (collegues == 0)
+    for (int i = 0; i < collegues; i++)
     {
-        cout << "Sim";
-        return;
+        getline(cin, line);
+        feriasColegas.push_back(parsePeriod(line));
     }
 
-    for (int i = collegues; i > 0; i--)
+    getline(cin, line);
+    auto minhasFerias = parsePeriod(line);
+
+    for (auto [ini, fim] : feriasColegas)
     {
-        getline(cin, ferias);
-        feriasVec.push_back(ferias);
-    }
-    vector<vector<int>> feriasColegas;
-    for (string s : feriasVec)
-    {
-        feriasColegas.push_back(getStartAndEndDateAsDays(s));
-    }
-    getline(cin, ferias);
-    vector<int> minhasFerias = getStartAndEndDateAsDays(ferias);
-    for (vector<int> periodos : feriasColegas)
-    {
-        if ((minhasFerias[0] >= periodos[0] && minhasFerias[0] <= periodos[1]) || (minhasFerias[1] >= periodos[0] && minhasFerias[1] <= periodos[1]))
+        if (!(minhasFerias.second < ini || minhasFerias.first > fim))
         {
-            cout << "Nao" << endl;
+            cout << "Nao\n";
             return;
         }
     }
-    cout << "Sim" << endl;
+    cout << "Sim\n";
 }
+
 int main()
 {
-    fast_io;
     int t = 1;
     cin >> t;
     solve(t);
