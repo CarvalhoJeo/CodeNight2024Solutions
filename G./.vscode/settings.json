@@ -3,7 +3,9 @@
         "*.tpp": "cpp",
         "*.ipp": "cpp",
         "vector": "cpp",
-        "tuple": "cpp",
-        "regex": "cpp"
+        "iostream": "cpp",
+        "__split_buffer": "cpp",
+        "deque": "cpp",
+        "list": "cpp"
     }
 }
